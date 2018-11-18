@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Quiz
 {
@@ -7,11 +8,12 @@ namespace Quiz
     {
         static void Main(string[] args)
         {
+            List<Question> quiz = new List<Question>();
             //open vraag 1
             Question open1 = new Question {
                 Text = "Who was the inventor of Java?",
                 Answer = "James Gosling",
-                Moeilijkheidsgraad = "2",
+                Moeilijkheidsgraad = "3",
                 Categorie = "Technologie"
             };
             
@@ -20,8 +22,8 @@ namespace Quiz
             {
                 Text = "Waar staat PC voor?",
                 Answer = "Personal Computer",
-                Moeilijkheidsgraad = "1",
-                Categorie = "Technologie"
+                Moeilijkheidsgraad = "2",
+                Categorie = "AlgemeneKennis"
             };
 
             //multiplechoice 1
@@ -36,10 +38,26 @@ namespace Quiz
             multi1.AddChoice("Scala", false);
             multi1.AddChoice("Ycode", true);
 
-            //present questions
-            PresentQuestion(open1);
-            PresentQuestion(open2);
-            PresentQuestion(multi1);
+            //add questions to list
+            quiz.Add(open1);
+            quiz.Add(open2);
+            quiz.Add(multi1);
+
+            //sorteer list
+            var sorteerresult = from q in quiz
+                         orderby q.Moeilijkheidsgraad ascending
+                         select q;
+
+            //filter list
+            IEnumerable<Question> filterresult = from q in sorteerresult
+                                           where q.Categorie == "Technologie"
+                                           select q;
+            //presenteer quiz
+            foreach (var q in filterresult)
+            {
+                PresentQuestion(q);
+            }
+
         }
 
         public static void PresentQuestion(Question q)
